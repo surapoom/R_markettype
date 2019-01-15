@@ -13,8 +13,8 @@ evaluate_market_type <- function(x, model_path, num_cols){
   # x <- read_rds("macd_df.rds")
   # x <- df
   # num_cols <- 64
-  # model_path <- "C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/models/regression.bin/DL_Regression"
-  # model_path <- "C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/models/classification.bin/DL_Classification"
+  # model_path <- "C:/LazyTrading/GitHub/R_markettype/models/regression.bin/DL_Regression"
+  # model_path <- "C:/LazyTrading/GitHub/R_markettype/models/classification.bin/DL_Classification"
   
   # load models
   m1 <- h2o.loadModel(model_path) 

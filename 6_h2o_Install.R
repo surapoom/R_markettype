@@ -1,5 +1,3 @@
-### Check the latest release here: https://www.h2o.ai/download/ ###
-
 # The following two commands remove any previously installed H2O packages for R.
 if ("package:h2o" %in% search()) { detach("package:h2o", unload=TRUE) }
 if ("h2o" %in% rownames(installed.packages())) { remove.packages("h2o") }
@@ -11,12 +9,11 @@ for (pkg in pkgs) {
 }
 
 # Now we download, install and initialize the H2O package for R.
-install.packages("h2o", type="source", repos="http://h2o-release.s3.amazonaws.com/h2o/rel-wolpert/4/R")
+install.packages("h2o", type="source", repos="http://h2o-release.s3.amazonaws.com/h2o/rel-xia/2/R")
 
 # Finally, let's load H2O and start up an H2O cluster
 library(h2o)
 h2o.init(nthreads = 2)
 
-# Shutdown
+#shutdown
 h2o.shutdown(prompt = FALSE)
-

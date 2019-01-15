@@ -11,13 +11,13 @@ library(tidyverse)
 library(h2o)
 library(lubridate)
 #library(plotly)
-source("C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/to_m.R")
+source("C:/LazyTrading/GitHub/R_markettype/to_m.R")
 
 #absolute path to store model objects (useful when scheduling tasks)
-path_model <- "C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/models"
+path_model <- "C:/LazyTrading/GitHub/R_markettype/models"
 
-data_update_path <- "C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/TEST1/data_update"
-data_initial_path <- "C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/TEST1/data_initial"
+data_update_path <- "C:/LazyTrading/GitHub/R_markettype/TEST1/data_update"
+data_initial_path <- "C:/LazyTrading/GitHub/R_markettype/TEST1/data_initial"
 
 #### Manually Selecting data... =================================================
 # see script 1_data_selection.R

@@ -6,27 +6,33 @@
 library(tidyverse)
 library(lubridate)
 library(h2o)
-source("C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/TEST/evaluate_market_type.R")
-source("C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/to_m.R")
+source("C:/LazyTrading/GitHub/R_markettype/TEST/evaluate_market_type.R")
+source("C:/LazyTrading/GitHub/R_markettype/to_m.R")
 
 # Defining variables to be re-used in the code
-sbx <- "C:/Program Files (x86)/FxPro - Terminal2/MQL4/Files"
-sbx_masterT1 <- "C:/Program Files (x86)/FxPro - Terminal1/MQL4/Files"
-sbx_slaveT3 <- "C:/Program Files (x86)/FxPro - Terminal3/MQL4/Files"
-sbx_slaveT4 <- "C:/Program Files (x86)/FxPro - Terminal4/MQL4/Files"
+sbx <- "C:/Program Files (x86)/ICMarkets MT4 Terminal2/MQL4/Files"
+sbx_masterT1 <- "C:/Program Files (x86)/ICMarkets MT4 Terminal1/MQL4/Files"
+sbx_slaveT3 <- "C:/Program Files (x86)/ICMarkets MT4 Terminal3/MQL4/Files"
+sbx_slaveT4 <- "C:/Program Files (x86)/ICMarkets MT4 Terminal4/MQL4/Files"
 chart_period <- 15 #this variable will define market type period
 
 # Vector of currency pairs
+# Pairs = c("EURUSD", "GBPUSD", "AUDUSD", "NZDUSD", "USDCAD", "USDCHF", "USDJPY",
+#           "EURGBP", "EURJPY", "EURCHF", "EURNZD", "EURCAD", "EURAUD", "GBPAUD",
+#           "GBPCAD", "GBPCHF", "GBPJPY", "GBPNZD", "AUDCAD", "AUDCHF", "AUDJPY",
+#           "AUDNZD", "CADJPY", "CHFJPY", "NZDJPY", "NZDCAD", "NZDCHF", "CADCHF")   
+
 Pairs = c("EURUSD", "GBPUSD", "AUDUSD", "NZDUSD", "USDCAD", "USDCHF", "USDJPY",
           "EURGBP", "EURJPY", "EURCHF", "EURNZD", "EURCAD", "EURAUD", "GBPAUD",
           "GBPCAD", "GBPCHF", "GBPJPY", "GBPNZD", "AUDCAD", "AUDCHF", "AUDJPY",
-          "AUDNZD", "CADJPY", "CHFJPY", "NZDJPY", "NZDCAD", "NZDCHF", "CADCHF")   
+          "AUDNZD", "CADJPY", "CHFJPY", "NZDJPY", "NZDCAD", "NZDCHF", "CADCHF",
+          "USDTHB", "XAUEUR", "XAUUSD", "XBRUSD") 
 
 # Reading the data from the Sandbox of Terminal 2 --> !!!Make sure that DataWriter robot is attached and working in Terminal 2!!!
 sbx_price <- file.path(sbx, paste0("AI_CP",chart_period,"-300.csv"))
 sbx_macd <- file.path(sbx, paste0("AI_Macd", chart_period,"-300.csv"))
 #price <- read_csv(sbx_price, col_names = F)
-macd <- read_csv(sbx_macd, col_names = F, col_types = "cdddddddddddddddddddddddddddd")
+macd <- read_csv(sbx_macd, col_names = F, col_types = "cdddddddddddddddddddddddddddddddd")
 macd$X1 <- ymd_hms(macd$X1)
 
 # Prepare data frame with last 64 observations of all 28 pairs and remove date/time column (16 hours)
@@ -45,8 +51,8 @@ for (PAIR in Pairs) {
   df <- macd_100 %>% select(PAIR)
   # Use function to score the data to the model
   my_market <- evaluate_market_type(x = df,
-                                    #model_path = "C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/models/regression.bin/DL_Regression",
-                                    model_path = "C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/models/classification.bin/DL_Classification",
+                                    #model_path = "C:/LazyTrading/GitHub/R_markettype/models/regression.bin/DL_Regression",
+                                    model_path = "C:/LazyTrading/GitHub/R_markettype/models/classification.bin/DL_Classification",
                                     num_cols = 64) %>% as.data.frame()
   # Return the name of the output
   names(my_market) <- PAIR

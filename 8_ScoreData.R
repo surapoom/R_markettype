@@ -6,26 +6,32 @@
 library(tidyverse)
 library(lubridate)
 library(h2o)
-source("C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/evaluate_market_type.R")
-source("C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/to_m.R")
+source("C:/LazyTrading/GitHub/R_markettype/evaluate_market_type.R")
+source("C:/LazyTrading/GitHub/R_markettype/to_m.R")
 
 # Reading the data from the Sandbox
-sbx <- "C:/Program Files (x86)/FxPro - Terminal2/MQL4/Files"
-sbx_price <- file.path(sbx, "AI_CP15.csv")
-sbx_macd <- file.path(sbx, "AI_Macd15.csv")
+sbx <- "C:/Program Files (x86)/ICMarkets MT4 Terminal2/MQL4/Files"
+sbx_price <- file.path(sbx, "AI_CP15-35000.csv")
+sbx_macd <- file.path(sbx, "AI_Macd15-35000.csv")
 
 #price <- read_csv(sbx_price, col_names = F)
-macd <- read_csv(sbx_macd, col_names = F, col_types = "cdddddddddddddddddddddddddddd")
+macd <- read_csv(sbx_macd, col_names = F, col_types = "cdddddddddddddddddddddddddddddddd")
 macd$X1 <- ymd_hms(macd$X1)
 
 # Vector of currency pairs
+# Pairs = c("EURUSD", "GBPUSD", "AUDUSD", "NZDUSD", "USDCAD", "USDCHF", "USDJPY",
+#           "EURGBP", "EURJPY", "EURCHF", "EURNZD", "EURCAD", "EURAUD", "GBPAUD",
+#           "GBPCAD", "GBPCHF", "GBPJPY", "GBPNZD", "AUDCAD", "AUDCHF", "AUDJPY",
+#           "AUDNZD", "CADJPY", "CHFJPY", "NZDJPY", "NZDCAD", "NZDCHF", "CADCHF")   
 Pairs = c("EURUSD", "GBPUSD", "AUDUSD", "NZDUSD", "USDCAD", "USDCHF", "USDJPY",
           "EURGBP", "EURJPY", "EURCHF", "EURNZD", "EURCAD", "EURAUD", "GBPAUD",
           "GBPCAD", "GBPCHF", "GBPJPY", "GBPNZD", "AUDCAD", "AUDCHF", "AUDJPY",
-          "AUDNZD", "CADJPY", "CHFJPY", "NZDJPY", "NZDCAD", "NZDCHF", "CADCHF")   
+          "AUDNZD", "CADJPY", "CHFJPY", "NZDJPY", "NZDCAD", "NZDCHF", "CADCHF",
+          "USDTHB", "XAUEUR", "XAUUSD", "XBRUSD") 
+
 
 # Prepare data frame with last 64 observations and remove date/time column (6 hours)
-macd_100 <- macd %>% select(c(X2:X29)) %>% head(64)
+macd_100 <- macd %>% select(c(X2:X33)) %>% head(64)
 
 # Rename the column?
 names(macd_100) <- Pairs
@@ -38,11 +44,11 @@ for (PAIR in Pairs) {
   # PAIR <- "EURUSD"
   df <- macd_100 %>% select(PAIR)
   my_market <- evaluate_market_type(x = df,
-                                    model_path = "C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/models/regression.bin/DL_Regression",
-                                    #model_path = "C:/Users/fxtrams/Documents/000_TradingRepo/R_markettype/models/classification.bin/DL_Classification",
+                                    model_path = "C:/LazyTrading/GitHub/R_markettype/models/regression.bin/DL_Regression",
+                                    #model_path = "C:/LazyTrading/GitHub/R_markettype/models/classification.bin/DL_Classification",
                                     num_cols = 64) %>% as.data.frame()
   names(my_market) <- PAIR
-  write_csv(my_market, file.path(sbx, paste0("AI_MarketType_", PAIR, ".csv")))
+  write_csv(my_market, file.path(sbx, paste0("AI_MarketType_", PAIR, "15.csv")))
 }
 
 # shutdown

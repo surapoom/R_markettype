@@ -36,7 +36,7 @@ macd$X1 <- ymd_hms(macd$X1)
 ggplot(prices, aes(X1, X5))+geom_line()
 
 # Extract approximate date and choose only relevant columns
-price_df <- prices %>% filter(X1 > "2017-11-05", X1 < "2018-01-20") %>% select(X1, X5)
+price_df <- prices %>% filter(X1 > "2017-12-09", X1 < "2018-01-20") %>% select(X1, X5)
 
 # Visualize it to confirm 
 ggplot(price_df, aes(X1, X5))+geom_line()
