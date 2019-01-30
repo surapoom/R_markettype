@@ -37,15 +37,16 @@ Pairs = c("EURUSD", "GBPUSD", "AUDUSD", "NZDUSD", "USDCAD", "USDCHF", "USDJPY",
           "USDTHB", "XAUEUR", "XAUUSD", "XBRUSD") 
 
 # Reading the data from the Sandbox of Terminal 2 --> !!!Make sure that DataWriter robot is attached and working in Terminal 2!!!
-sbx_price <- file.path(sbx, paste0("AI_CP",chart_period,"-300.csv"))
-sbx_macd <- file.path(sbx, paste0("AI_Macd", chart_period,"-300.csv"))
+sbx_price <- file.path(sbx, paste0("AI_CP",chart_period,"-35000.csv"))
+sbx_macd <- file.path(sbx, paste0("AI_Macd", chart_period,"-35000.csv"))
 #price <- read_csv(sbx_price, col_names = F)
 #macd <- read_csv(sbx_macd, col_names = F, col_types = "cdddddddddddddddddddddddddddd")
 macd <- read_csv(sbx_macd, col_names = F, col_types = "cdddddddddddddddddddddddddddddddd")
 macd$X1 <- ymd_hms(macd$X1)
 
 # Prepare data frame with last 64 observations of all 28 pairs and remove date/time column (16 hours)
-macd_100 <- macd %>% select(c(X2:X29)) %>% head(64)
+#macd_100 <- macd %>% select(c(X2:X29)) %>% head(64)
+macd_100 <- macd %>% select(c(X2:X33)) %>% head(64)
 
 # Rename the columns
 names(macd_100) <- Pairs
@@ -93,7 +94,7 @@ for (PAIR in Pairs) {
   write_csv(my_market, file.path(sbx_masterT1, paste0("AI_MarketType_", PAIR, chart_period, ".csv")))
   write_csv(my_market, file.path(sbx_slaveT3,  paste0("AI_MarketType_", PAIR, chart_period, ".csv")))
   write_csv(my_market, file.path(sbx_slaveT4,  paste0("AI_MarketType_", PAIR, chart_period, ".csv")))
-  write_csv(my_market, file.path(sbx_slaveT5,  paste0("AI_MarketType_", PAIR, chart_period, ".csv")))
+  #write_csv(my_market, file.path(sbx_slaveT5,  paste0("AI_MarketType_", PAIR, chart_period, ".csv")))
 }
 
 # retrieve already recorded data >> add temporary dataframe >> write to the data_update folder
@@ -115,3 +116,4 @@ if(exists("df_temp") && !file.exists(file.path(data_update_path, "macd_ai_classi
 
 # shutdown  the virtual machine
 h2o.shutdown(prompt = F)
+

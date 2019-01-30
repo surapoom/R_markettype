@@ -15,10 +15,13 @@ source("to_m.R")
 
 #### Read asset prices and indicators ==========================================
 # load prices of 28 currencies
-prices <- read_csv("AI_CP15.csv", col_names = F)
+prices <- read_csv("MyInitData/AI_CP15-14000-33AsRuler.csv", col_names = F)
+#prices <- read_csv("MyInitData/AI_CP15-14000.csv", col_names = F)
+#prices <- read_csv("AI_CP15.csv", col_names = F)
 prices$X1 <- ymd_hms(prices$X1)
 # load macd indicator of 28 currencies
-macd <- read_csv("AI_Macd15.csv", col_names = F)
+macd <- read_csv("MyInitData/AI_Macd15-14000.csv", col_names = F)
+#macd <- read_csv("AI_Macd15-35000.csv", col_names = F)
 macd$X1 <- ymd_hms(macd$X1)
 
 #### Manually Selecting data... =================================================
@@ -34,22 +37,22 @@ macd$X1 <- ymd_hms(macd$X1)
 ## ---------- # 1. Bull normal, BUN ---------------
 ##########################################################################
 # Choose the asset corresponding to this period /find by replacing 'y' argument/
-ggplot(prices, aes(X1, X5))+geom_line()
+ggplot(prices, aes(X1, X8))+geom_line()
 
 # Extract approximate date and choose only relevant columns
-price_df <- prices %>% filter(X1 > "2017-12-15", X1 < "2018-01-20") %>% select(X1, X5)
+price_df <- prices %>% filter(X1 > "2018-08-22", X1 < "2018-10-01") %>% select(X1, X8)
 
 # Visualize it to confirm 
-ggplot(price_df, aes(X1, X5))+geom_line()
+ggplot(price_df, aes(X1, X8))+geom_line()
 
 # Extract corresponding piece of indicator dataframe:
-macd_df <- macd %>% select(X1, X5) %>% inner_join(price_df, by = c("X1" = "X1"))
+macd_df <- macd %>% select(X1, X8) %>% inner_join(price_df, by = c("X1" = "X1"))
 
 # Visualize both things together
-ggplot(macd_df, aes(X1, X5.y, col = X5.x))+geom_line()
+ggplot(macd_df, aes(X1, X8.y, col = X8.x))+geom_line()
 
 # transform to matrix, number of columns will correspond to model sensitivity e.g. 100 columns ~ 24 Hours
-macd_m <- macd_df %>% select(X5.x) %>% to_m(64)
+macd_m <- macd_df %>% select(X8.x) %>% to_m(64)
 #########################################################################
 # add new column to this matrix with value BUN
 macd_m_1 <- transform(macd_m, M_T = "BUN")
@@ -60,88 +63,10 @@ macd_m_1 <- transform(macd_m, M_T = "BUN")
 ## ---------- # 2. Bull volatile, BUV ---------------
 ##########################################################################
 # Choose the asset corresponding to this period /find by replacing 'y' argument/
-ggplot(prices, aes(X1, X15))+geom_line()
-
-# Extract approximate date and choose only relevant columns
-price_df <- prices %>% filter(X1 > "2018-03-10", X1 < "2018-03-20") %>% select(X1, X15)
-
-# Visualize it to confirm 
-ggplot(price_df, aes(X1, X15))+geom_line()
-
-# Extract corresponding piece of macd dataframe:
-macd_df <- macd %>% select(X1, X15) %>% inner_join(price_df, by = c("X1" = "X1"))
-
-# Visualize both things together
-ggplot(macd_df, aes(X1, X15.y, col = X15.x))+geom_line()
-
-# transform to matrix, number of columns will correspond to model sensitivity e.g. 100 columns ~ 24 Hours
-macd_m <- macd_df %>% select(X15.x) %>% to_m(64)
-
-#########################################################################
-macd_m_2 <- transform(macd_m, M_T = "BUV") 
-#########################################################################
-
-
-##########################################################################
-## ---------- # 3. Bear normal, BEN ---------------
-##########################################################################
-# Choose the asset corresponding to this period /find by replacing 'y' argument/
-ggplot(prices, aes(X1, X29))+geom_line()
-
-# Extract approximate date and choose only relevant columns
-price_df <- prices %>% filter(X1 > "2018-01-10", X1 < "2018-02-15") %>% select(X1, X29)
-
-# Visualize it to confirm 
-ggplot(price_df, aes(X1, X29))+geom_line()
-
-# Extract corresponding piece of macd dataframe:
-macd_df <- macd %>% select(X1, X29) %>% inner_join(price_df, by = c("X1" = "X1"))
-
-# Visualize both things together
-ggplot(macd_df, aes(X1, X29.y, col = X29.x))+geom_line()
-
-# transform to matrix, number of columns will correspond to model sensitivity e.g. 100 columns ~ 24 Hours
-macd_m <- macd_df %>% select(X29.x) %>% to_m(64)
-
-#########################################################################
-macd_m_3 <- transform(macd_m, M_T = "BEN")
-#########################################################################
-
-
-##########################################################################
-## ---------- # 4. Bear volatile, BEV ---------------
-##########################################################################
-# Choose the asset corresponding to this period /find by replacing 'y' argument/
-ggplot(prices, aes(X1, X7))+geom_line()
-
-# Extract approximate date and choose only relevant columns
-price_df <- prices %>% filter(X1 > "2018-01-22", X1 < "2018-01-29") %>% select(X1, X7)
-
-# Visualize it to confirm 
-ggplot(price_df, aes(X1, X7))+geom_line()
-
-# Extract corresponding piece of macd dataframe:
-macd_df <- macd %>% select(X1, X7) %>% inner_join(price_df, by = c("X1" = "X1"))
-
-# Visualize both things together
-ggplot(macd_df, aes(X1, X7.y, col = X7.x))+geom_line()
-
-# transform to matrix, number of columns will correspond to model sensitivity e.g. 100 columns ~ 24 Hours
-macd_m <- macd_df %>% select(X7.x) %>% to_m(64)
-
-#########################################################################
-macd_m_4 <- transform(macd_m, M_T = "BEV")
-#########################################################################
-
-
-##########################################################################
-## ---------- # 5. Sideways quiet, RAN ---------------
-##########################################################################
-# Choose the asset corresponding to this period /find by replacing 'y' argument/
 ggplot(prices, aes(X1, X2))+geom_line()
 
 # Extract approximate date and choose only relevant columns
-price_df <- prices %>% filter(X1 > "2018-03-20", X1 < "2018-04-10") %>% select(X1, X2)
+price_df <- prices %>% filter(X1 > "2018-08-16", X1 < "2018-08-29") %>% select(X1, X2)
 
 # Visualize it to confirm 
 ggplot(price_df, aes(X1, X2))+geom_line()
@@ -156,6 +81,84 @@ ggplot(macd_df, aes(X1, X2.y, col = X2.x))+geom_line()
 macd_m <- macd_df %>% select(X2.x) %>% to_m(64)
 
 #########################################################################
+macd_m_2 <- transform(macd_m, M_T = "BUV") 
+#########################################################################
+
+
+##########################################################################
+## ---------- # 3. Bear normal, BEN ---------------
+##########################################################################
+# Choose the asset corresponding to this period /find by replacing 'y' argument/
+ggplot(prices, aes(X1, X20))+geom_line()
+
+# Extract approximate date and choose only relevant columns
+price_df <- prices %>% filter(X1 > "2018-07-10", X1 < "2018-10-04") %>% select(X1, X20)
+
+# Visualize it to confirm 
+ggplot(price_df, aes(X1, X20))+geom_line()
+
+# Extract corresponding piece of macd dataframe:
+macd_df <- macd %>% select(X1, X20) %>% inner_join(price_df, by = c("X1" = "X1"))
+
+# Visualize both things together
+ggplot(macd_df, aes(X1, X20.y, col = X20.x))+geom_line()
+
+# transform to matrix, number of columns will correspond to model sensitivity e.g. 100 columns ~ 24 Hours
+macd_m <- macd_df %>% select(X20.x) %>% to_m(64)
+
+#########################################################################
+macd_m_3 <- transform(macd_m, M_T = "BEN")
+#########################################################################
+
+
+##########################################################################
+## ---------- # 4. Bear volatile, BEV ---------------
+##########################################################################
+# Choose the asset corresponding to this period /find by replacing 'y' argument/
+ggplot(prices, aes(X1, X11))+geom_line()
+
+# Extract approximate date and choose only relevant columns
+price_df <- prices %>% filter(X1 > "2018-07-15", X1 < "2018-08-16") %>% select(X1, X11)
+
+# Visualize it to confirm 
+ggplot(price_df, aes(X1, X11))+geom_line()
+
+# Extract corresponding piece of macd dataframe:
+macd_df <- macd %>% select(X1, X11) %>% inner_join(price_df, by = c("X1" = "X1"))
+
+# Visualize both things together
+ggplot(macd_df, aes(X1, X11.y, col = X11.x))+geom_line()
+
+# transform to matrix, number of columns will correspond to model sensitivity e.g. 100 columns ~ 24 Hours
+macd_m <- macd_df %>% select(X11.x) %>% to_m(64)
+
+#########################################################################
+macd_m_4 <- transform(macd_m, M_T = "BEV")
+#########################################################################
+
+
+##########################################################################
+## ---------- # 5. Sideways quiet, RAN ---------------
+##########################################################################
+# Choose the asset corresponding to this period /find by replacing 'y' argument/
+ggplot(prices, aes(X1, X7))+geom_line()
+
+# Extract approximate date and choose only relevant columns
+price_df <- prices %>% filter(X1 > "2018-08-06", X1 < "2018-08-20") %>% select(X1, X7)
+
+# Visualize it to confirm 
+ggplot(price_df, aes(X1, X7))+geom_line()
+
+# Extract corresponding piece of macd dataframe:
+macd_df <- macd %>% select(X1, X7) %>% inner_join(price_df, by = c("X1" = "X1"))
+
+# Visualize both things together
+ggplot(macd_df, aes(X1, X7.y, col = X7.x))+geom_line()
+
+# transform to matrix, number of columns will correspond to model sensitivity e.g. 100 columns ~ 24 Hours
+macd_m <- macd_df %>% select(X7.x) %>% to_m(64)
+
+#########################################################################
 macd_m_5 <- transform(macd_m, M_T = "RAN") 
 #########################################################################
 
@@ -163,22 +166,22 @@ macd_m_5 <- transform(macd_m, M_T = "RAN")
 ## ---------- # 6. Sideways volatile, RAV ---------------
 ##########################################################################
 # Choose the asset corresponding to this period /find by replacing 'y' argument/
-ggplot(prices, aes(X1, X9))+geom_line()
+ggplot(prices, aes(X1, X4))+geom_line()
 
 # Extract approximate date and choose only relevant columns
-price_df <- prices %>% filter(X1 > "2018-01-01", X1 < "2018-11-20") %>% select(X1, X9)
+price_df <- prices %>% filter(X1 > "2018-07-01", X1 < "2018-08-05") %>% select(X1, X4)
 
 # Visualize it to confirm 
-ggplot(price_df, aes(X1, X9))+geom_line()
+ggplot(price_df, aes(X1, X4))+geom_line()
 
 # Extract corresponding piece of macd dataframe:
-macd_df <- macd %>% select(X1, X9) %>% inner_join(price_df, by = c("X1" = "X1"))
+macd_df <- macd %>% select(X1, X4) %>% inner_join(price_df, by = c("X1" = "X1"))
 
 # Visualize both things together
-ggplot(macd_df, aes(X1, X9.y, col = X9.x))+geom_line()
+ggplot(macd_df, aes(X1, X4.y, col = X4.x))+geom_line()
 
 # transform to matrix, number of columns will correspond to model sensitivity e.g. 100 columns ~ 24 Hours
-macd_m <- macd_df %>% select(X9.x) %>% to_m(64)
+macd_m <- macd_df %>% select(X4.x) %>% to_m(64)
 
 #########################################################################
 macd_m_6 <- transform(macd_m, M_T = "RAV")
